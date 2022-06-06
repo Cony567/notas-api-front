@@ -6,17 +6,12 @@ import TodoList from './components/TodoList';
 const initialTodos = [
     {
         id:1,
-        title: 'todo #1',
-        description: 'desc del todo #1',
+        title: 'Nota mental',
+        description: 'Agrega Notas a tu lista no lo olvides',
         completed: false
     },
-    {
-        id:2,
-        title: 'todo #2',
-        description: 'desc del todo #2',
-        completed: true
-    }
 ];
+
 
 const localTodos = JSON.parse(localStorage.getItem('todos'));
 
@@ -28,10 +23,17 @@ const App =()=>{
     useEffect(() => {
       localStorage.setItem('todos', JSON.stringify(todos));
     }, [todos])
-    
+    const actualizarTodosAPI = async ()=>{
+        const url = 'http://localhost:3001/api/notes';
+        const res = await fetch(url);
+        const nuevasNotas = await res.json();
+        console.log(nuevasNotas);
+        setTodos(nuevasNotas);
+        
+    }
 
     const todoDelete = (todoId) => {
-        if(todoEdit && todoId == todoEdit.id){
+        if(todoEdit && todoId === todoEdit.id){
             setTodoEdit(null);
         }
         const changedTodos = todos.filter(todo => todo.id !== todoId);
@@ -77,6 +79,9 @@ const App =()=>{
         setTodos(changedTodos);
     }
 
+    useEffect(()=>{
+        actualizarTodosAPI();
+    }, []);
     return (
         <div className='container mt-4'>
             <div className='row'>
